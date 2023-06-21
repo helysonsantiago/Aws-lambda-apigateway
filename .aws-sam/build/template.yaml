@@ -6,7 +6,7 @@ Resources:
   getAllItemsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-all-items.getAllItemsHandler
+      Handler: src/lambda/get-all-items.getAllItemsHandler
       Runtime: nodejs16.x
       Architectures:
       - x86_64
@@ -34,7 +34,7 @@ Resources:
   getByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-by-id.getByIdHandler
+      Handler: src/lambda/get-by-id.getByIdHandler
       Runtime: nodejs16.x
       Architectures:
       - x86_64
@@ -62,7 +62,7 @@ Resources:
   putItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/put-item.putItemHandler
+      Handler: src/lambda/put-item.putItemHandler
       Runtime: nodejs16.x
       Architectures:
       - x86_64
@@ -87,6 +87,62 @@ Resources:
       CodeUri: putItemFunction
     Metadata:
       SamResourceId: putItemFunction
+  updateByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/lambda/update-by-id.updateByIdHandler
+      Runtime: nodejs16.x
+      Architectures:
+      - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get all items from
+        a DynamoDB table.
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: SampleTable
+      Environment:
+        Variables:
+          SAMPLE_TABLE:
+            Ref: SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{id}
+            Method: PUT
+      CodeUri: updateByIdFunction
+    Metadata:
+      SamResourceId: updateByIdFunction
+  deleteItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/lambda/delete-by-id.deleteByIdHandler
+      Runtime: nodejs16.x
+      Architectures:
+      - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get all items from
+        a DynamoDB table.
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: SampleTable
+      Environment:
+        Variables:
+          SAMPLE_TABLE:
+            Ref: SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{id}
+            Method: DELETE
+      CodeUri: deleteItemFunction
+    Metadata:
+      SamResourceId: deleteItemFunction
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
